@@ -123,7 +123,7 @@ export default function Footer() {
           }}
         >
           <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            © {new Date().getFullYear()} Vishvanth. Designed with cinematic minimalism. All rights reserved.
+            © {new Date().getFullYear()} VISHVANTH. All rights reserved.
           </p>
 
           {/* Social Links & Back to Top */}
