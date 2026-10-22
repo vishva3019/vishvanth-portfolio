@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, ArrowUpRight, Mail } from 'lucide-react';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 import { GithubIcon, LinkedinIcon } from './Icons';
 import { personalInfo } from '../data/portfolioData';
 
@@ -20,11 +20,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 40) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 30);
 
       // Active section detection
       const sections = ['home', 'about', 'projects', 'skills', 'achievements', 'journey', 'contact'];
@@ -53,7 +49,7 @@ export default function Navbar() {
     const targetId = href.replace('#', '');
     const element = document.getElementById(targetId);
     if (element) {
-      const navOffset = 80;
+      const navOffset = 76;
       const elementPosition = element.getBoundingClientRect().top + window.pageYOffset;
       window.scrollTo({
         top: elementPosition - navOffset,
@@ -64,74 +60,20 @@ export default function Navbar() {
 
   return (
     <>
-      <header
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100%',
-          zIndex: 80,
-          transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-          backgroundColor: isScrolled ? 'rgba(7, 8, 10, 0.85)' : 'transparent',
-          backdropFilter: isScrolled ? 'blur(16px)' : 'none',
-          WebkitBackdropFilter: isScrolled ? 'blur(16px)' : 'none',
-          borderBottom: isScrolled ? '1px solid rgba(201, 166, 107, 0.15)' : '1px solid transparent',
-          boxShadow: isScrolled ? '0 10px 30px rgba(0, 0, 0, 0.5)' : 'none'
-        }}
-      >
-        <div
-          className="container"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            height: isScrolled ? '72px' : '90px',
-            transition: 'height 0.4s ease'
-          }}
-        >
-          {/* Brand Logo / Monogram */}
+      <header className={`site-navbar ${isScrolled ? 'scrolled' : ''}`}>
+        <div className="navbar-inner">
+          {/* 1. Left: Brand Logo */}
           <a
             href="#home"
             onClick={(e) => handleNavClick(e, '#home')}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem',
-              color: 'var(--text-primary)'
-            }}
+            className="navbar-brand"
           >
-            <span
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: '1.25rem',
-                fontWeight: 700,
-                letterSpacing: '0.18em',
-                textTransform: 'uppercase'
-              }}
-            >
-              VISHVANTH
-            </span>
-            <span
-              style={{
-                width: '6px',
-                height: '6px',
-                borderRadius: '50%',
-                backgroundColor: 'var(--accent-gold)',
-                display: 'inline-block',
-                boxShadow: '0 0 8px rgba(201, 166, 107, 0.9)'
-              }}
-            />
+            <span>VISHVANTH</span>
+            <span className="navbar-brand-dot" />
           </a>
 
-          {/* Desktop Nav Items */}
-          <nav
-            style={{
-              display: 'none',
-              alignItems: 'center',
-              gap: '2.2rem'
-            }}
-            className="desktop-nav"
-          >
+          {/* 2. Center: Desktop Navigation Links */}
+          <nav className="navbar-links" aria-label="Main Navigation">
             {navItems.map((item) => {
               const isActive = activeSection === item.href.replace('#', '');
               return (
@@ -139,203 +81,106 @@ export default function Navbar() {
                   key={item.label}
                   href={item.href}
                   onClick={(e) => handleNavClick(e, item.href)}
-                  style={{
-                    position: 'relative',
-                    fontFamily: 'var(--font-tech)',
-                    fontSize: '0.78rem',
-                    fontWeight: 600,
-                    letterSpacing: '0.16em',
-                    textTransform: 'uppercase',
-                    color: isActive ? 'var(--accent-gold-light)' : 'var(--text-secondary)',
-                    transition: 'color 0.25s ease',
-                    padding: '0.4rem 0'
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isActive) e.currentTarget.style.color = 'var(--text-primary)';
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isActive) e.currentTarget.style.color = 'var(--text-secondary)';
-                  }}
+                  className={`navbar-link-item ${isActive ? 'active' : ''}`}
                 >
                   {item.label}
-                  {/* Active Gold Indicator */}
-                  <span
-                    style={{
-                      position: 'absolute',
-                      left: 0,
-                      bottom: '-2px',
-                      width: isActive ? '100%' : '0',
-                      height: '1px',
-                      backgroundColor: 'var(--accent-gold)',
-                      boxShadow: '0 0 6px rgba(201, 166, 107, 0.7)',
-                      transition: 'width 0.3s cubic-bezier(0.16, 1, 0.3, 1)'
-                    }}
-                  />
                 </a>
               );
             })}
           </nav>
 
-          {/* Desktop CTA Button */}
-          <div style={{ display: 'none', alignItems: 'center', gap: '1rem' }} className="desktop-cta">
+          {/* 3. Right: Single Desktop CTA */}
+          <div className="navbar-action">
             <a
               href="#contact"
               onClick={(e) => handleNavClick(e, '#contact')}
-              className="btn-secondary"
-              style={{
-                padding: '0.65rem 1.4rem',
-                fontSize: '0.74rem',
-                letterSpacing: '0.15em'
-              }}
+              className="navbar-cta"
             >
               Let's Connect
-              <ArrowUpRight size={14} style={{ color: 'var(--accent-gold)' }} />
+              <ArrowUpRight size={14} />
             </a>
           </div>
 
-          {/* Mobile Hamburger Button */}
+          {/* Mobile Hamburger Toggle */}
           <button
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={mobileMenuOpen ? 'Close navigation' : 'Open navigation'}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '42px',
-              height: '42px',
-              color: 'var(--text-primary)',
-              borderRadius: '4px',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              background: 'rgba(255, 255, 255, 0.03)'
-            }}
-            className="mobile-toggle"
+            className="navbar-toggle"
+            aria-label={mobileMenuOpen ? 'Close Navigation Menu' : 'Open Navigation Menu'}
+            aria-expanded={mobileMenuOpen}
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </header>
 
-      {/* Mobile Drawer Navigation */}
-      <div
-        style={{
-          position: 'fixed',
-          inset: 0,
-          zIndex: 75,
-          backgroundColor: 'rgba(7, 8, 10, 0.96)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: '6rem 2rem 2.5rem',
-          transform: mobileMenuOpen ? 'translateY(0)' : 'translateY(-100%)',
-          transition: 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-          pointerEvents: mobileMenuOpen ? 'auto' : 'none'
-        }}
-      >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <p
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.7rem',
-              letterSpacing: '0.25em',
-              color: 'var(--accent-gold)',
-              textTransform: 'uppercase',
-              marginBottom: '0.5rem'
-            }}
-          >
-            NAVIGATION INDEX
-          </p>
-          {navItems.map((item, idx) => {
-            const isActive = activeSection === item.href.replace('#', '');
-            return (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={(e) => handleNavClick(e, item.href)}
-                style={{
-                  display: 'flex',
-                  alignItems: 'baseline',
-                  gap: '1rem',
-                  fontFamily: 'var(--font-display)',
-                  fontSize: '1.8rem',
-                  fontWeight: 600,
-                  color: isActive ? 'var(--accent-gold-light)' : 'var(--text-secondary)',
-                  letterSpacing: '0.02em',
-                  transition: 'color 0.2s ease'
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.75rem',
-                    color: 'var(--accent-gold)',
-                    opacity: 0.6
-                  }}
+      {/* Mobile Drawer (Only mounted/active when mobileMenuOpen is true) */}
+      {mobileMenuOpen && (
+        <div className="mobile-nav-overlay">
+          <div className="mobile-nav-list">
+            <p
+              style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '0.72rem',
+                letterSpacing: '0.2em',
+                color: 'var(--accent-gold)',
+                textTransform: 'uppercase',
+                margin: '0 0 10px 0'
+              }}
+            >
+              INDEX // NAVIGATION
+            </p>
+            {navItems.map((item, idx) => {
+              const isActive = activeSection === item.href.replace('#', '');
+              return (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={(e) => handleNavClick(e, item.href)}
+                  className={`mobile-nav-link ${isActive ? 'active' : ''}`}
                 >
-                  0{idx + 1}
-                </span>
-                {item.label}
-              </a>
-            );
-          })}
-        </div>
-
-        <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '1.5rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.5rem' }}>
-            <a
-              href={personalInfo.github}
-              target="_blank"
-              rel="noreferrer"
-              style={{ color: 'var(--text-secondary)' }}
-              aria-label="GitHub"
-            >
-              <GithubIcon size={20} />
-            </a>
-            <a
-              href={personalInfo.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              style={{ color: 'var(--text-secondary)' }}
-              aria-label="LinkedIn"
-            >
-              <LinkedinIcon size={20} />
-            </a>
-            <a
-              href={`mailto:${personalInfo.email}`}
-              style={{ color: 'var(--text-secondary)' }}
-              aria-label="Email"
-            >
-              <Mail size={20} />
-            </a>
+                  <span className="mobile-nav-num">0{idx + 1}</span>
+                  <span>{item.label}</span>
+                </a>
+              );
+            })}
           </div>
 
-          <a
-            href="#contact"
-            onClick={(e) => handleNavClick(e, '#contact')}
-            className="btn-primary"
-            style={{ width: '100%', textAlign: 'center' }}
-          >
-            Let's Connect
-            <ArrowUpRight size={16} />
-          </a>
-        </div>
-      </div>
+          {/* Mobile Footer with Social Icons and Single Mobile CTA */}
+          <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px' }}>
+              <a
+                href={personalInfo.github}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: '#94a3b8' }}
+                aria-label="GitHub"
+              >
+                <GithubIcon size={20} />
+              </a>
+              <a
+                href={personalInfo.linkedin}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: '#94a3b8' }}
+                aria-label="LinkedIn"
+              >
+                <LinkedinIcon size={20} />
+              </a>
+            </div>
 
-      <style>{`
-        @media (min-width: 900px) {
-          .desktop-nav {
-            display: flex !important;
-          }
-          .desktop-cta {
-            display: flex !important;
-          }
-          .mobile-toggle {
-            display: none !important;
-          }
-        }
-      `}</style>
+            <a
+              href="#contact"
+              onClick={(e) => handleNavClick(e, '#contact')}
+              className="navbar-cta"
+              style={{ width: '100%', justifyContent: 'center', padding: '0.8rem 1.4rem' }}
+            >
+              Let's Connect
+              <ArrowUpRight size={14} />
+            </a>
+          </div>
+        </div>
+      )}
     </>
   );
 }

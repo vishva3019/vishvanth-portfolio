@@ -130,8 +130,8 @@ export default function BackgroundCanvas() {
         width: '100%',
         height: '100%',
         pointerEvents: 'none',
-        zIndex: 1,
-        opacity: 0.8
+        zIndex: 0,
+        opacity: 0.85
       }}
       aria-hidden="true"
     />
