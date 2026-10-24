@@ -22,7 +22,7 @@ export default function Loader({ onComplete }) {
             setTimeout(() => {
               onComplete?.();
             }, 600);
-          }, 200);
+          }, 1000);
           return 100;
         }
         const increment = Math.floor(Math.random() * 25) + 15;
